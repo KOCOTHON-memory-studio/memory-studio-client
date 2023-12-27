@@ -1,11 +1,16 @@
 import { atom } from 'recoil';
 import { recoilPersist } from "recoil-persist";
 
-const {persistAtom} = recoilPersist();
+const {persistAtom} = recoilPersist(
+    {
+        key: "localStorage",
+        storage: localStorage,
+    }
+);
 
   export const userIdState = atom({
-    key: 'userIdState',
-    default: '',
+    key: 'userId',
+    default: 'share',
     effects_UNSTABLE: [persistAtom]
   });
 

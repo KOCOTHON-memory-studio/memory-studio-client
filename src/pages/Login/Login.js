@@ -7,31 +7,28 @@ import axios from 'axios';
 import "./Login.css"
 
 function Login() {
-  const [ id, setId ] = useRecoilState(userIdState);
+  const [ userId, setId ] = useRecoilState(userIdState);
   const [ password, setPassword ] = useState([]);
   const [ loginValid, setLoginValid ] = useRecoilState(userLoginValidState);
   const navigate=useNavigate();
 
-    const isButtonDisabled = !id || !password ;
+    const isButtonDisabled = !userId || !password ;
 
-    const token = window.location.href.split('?token=')[1];
+    const token = window.location.href.split('?token=')[4];
 
-    useEffect(() => {
-        if (token) localStorage.setItem('4242-token', token);
-        if (localStorage.getItem('4242-token')) setLoginValid(true);
-
-      const storedUserId = localStorage.getItem(id);
-      if (storedUserId) {
-        setId(storedUserId);
-        handleSubmit(storedUserId, password);
-      }
-    }, []);
+    // useEffect(() => {
+    //   const storedUserId = localStorage.getItem(id);
+    //   if (storedUserId) {
+    //     setId(storedUserId);
+    //     handleSubmit(storedUserId, password);
+    //   }
+    // }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
 
         switch (name) {
-          case 'id':
+          case 'userId':
             setId(value);
             break;
           case 'password':
@@ -47,7 +44,7 @@ function Login() {
   
         try {
           const response = await axios.post('http://3.36.63.145:8080/api/login', {
-             "id": id,
+             "userId": userId,
              "password": password,
           });
 
@@ -56,11 +53,13 @@ function Login() {
           navigate('/');
           setLoginValid(true);
 
-          console.log('Sending data:', { id, password });
+          console.log('Sending data:', { userId, password });
           console.log('Server response:', response.data);
       }catch(error){
           console.log(error);
           alert('서버와의 통신 중 오류가 발생했습니다.');
+          localStorage.removeItem('id');
+          setId(null)
       }finally{
 
       }
@@ -73,7 +72,7 @@ function Login() {
         <div>
           <label>
             <div className="id">아이디</div>
-            <input className="box" type="text" name="id" value={id} onChange={handleInputChange} placeholder="아이디 입력" />
+            <input className="box" type="text" name="userId" value={userId} onChange={handleInputChange} placeholder="아이디 입력" />
           </label>
           <label>
             <div className="password1">비밀번호</div>
